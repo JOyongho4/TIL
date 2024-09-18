@@ -64,7 +64,7 @@
 
 
 <!-- 캡쳐 파일을 첨부해주세요! 캡쳐하는 법은 깃허브 강의 영상에 있습니다 (폴더 생성 후 폴더 안에 이미지 넣기 + 불러오기) -->
-![screenshot](./JOyongho4/Tableau/assignment/tableau assign/image/image.png)
+![설명 텍스트](./img/image.png)
 
 
 <!-- 문제와 문제 풀이가 모두 위 DArt-B Sample Store.xls 파일을 기반으로 제시되므로, 해당 엑셀파일을 사용하셔야 혼동이 없습니다. -->
