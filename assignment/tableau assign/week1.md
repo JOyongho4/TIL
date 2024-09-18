@@ -41,7 +41,7 @@
 
 
 <!-- 여기까진 그대로 둬 주세요-->
-![사진](https://github.com/JOyongho4/Tableau/tree/main/assignment/picture)
+
 
 ## 1강. 태블로설치
 
@@ -64,6 +64,7 @@
 
 
 <!-- 캡쳐 파일을 첨부해주세요! 캡쳐하는 법은 깃허브 강의 영상에 있습니다 (폴더 생성 후 폴더 안에 이미지 넣기 + 불러오기) -->
+![screenshot](./JOyongho4/Tableau/assignment/tableau assign/image/image.png)
 
 
 <!-- 문제와 문제 풀이가 모두 위 DArt-B Sample Store.xls 파일을 기반으로 제시되므로, 해당 엑셀파일을 사용하셔야 혼동이 없습니다. -->
@@ -189,3 +190,6 @@
 바로 읍면동의 경계를 가지고 있는 shp, geojson 등 공간파일을 원본데이터와 머지하는 것입니다.
 
 링크: https://subinze.tistory.com/m/2
+
+[def]: ..
+[def2]: ./
