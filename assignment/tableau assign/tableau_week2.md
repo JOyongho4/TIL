@@ -238,9 +238,13 @@ https://github.com/yousrchive/BUSINESS-INTELLIGENCE-TABLEAU/blob/main/study/img/
 ```
 
 ```
-여기에 답을 적어주세요!
+1. 배송날짜를 열, 국가/지역, 매출, 수익을 행으로 끌어옴. 배송날짜를 연속형 월로 변경
+2. 필터에 국가/지역을 끌어와 'China','Japan','South Korea'만 선택
+3. 측정값 이름을 마크의 색상으로 끌어옴
+4. 표현방식을 이중축으로 변경
+5. 오른쪽 세로축을 축 동기화
 ```
-
+![설](./img/202409222230.png)
 ### 참고 자료
 
 ```js
