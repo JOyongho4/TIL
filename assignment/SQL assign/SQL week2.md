@@ -48,3 +48,37 @@ where type1="Fire"
 5번
 
 ![설명 텍스트](./img/202409240723.png)
+
+
+```
+2-5 집계
+
+집계하다: 모아서 계산하다
+ex) 더하기 빼기 최대 최소값 평균 개수 ...
+
+GROUP BY : 같은 값끼리 모아서 그룹화
+특정 컬럼을 기준으로 모으면서 다른 컬럼에선 집계 가능
+
+정렬 (order by) 가능
+조건 (having) 가능
+
+select
+    집계할 칼럼1
+    집계 함수(count,max 등)
+from table
+group by
+    집계할_칼럼1
+
+distinct : 고유값을 알고 싶은 경우
+별개의 여러 값 중에서 unique한 것만 보고 싶은 경우 활용
+
+ex)
+메인 페이지 view 수는? : 4번
+count(user_id)
+
+메인 페이지 view 한 유저 수는? : 3명
+count(distinct user_id)
+```
+
+![설명 텍스트](./img/202409240736.png)
+![설명 텍스트](./img/202409240739.png)
