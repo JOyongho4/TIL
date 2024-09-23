@@ -78,7 +78,21 @@ count(user_id)
 
 메인 페이지 view 한 유저 수는? : 3명
 count(distinct user_id)
+
+그룹화 활용
+일자별, 연령대별, 특정 타입별, 앱 화면별 집계 등등...
+
+where vs having
+having : group by 후 조건을 설정하고 싶은 경우
+
+서브 쿼리: select 문 안에 존재하는 select 쿼리
+
+order by <칼럼> <순서> (asc, desc)
+
+limit : row 수 제한
 ```
 
 ![설명 텍스트](./img/202409240736.png)
 ![설명 텍스트](./img/202409240739.png)
+![설명 텍스트](./img/202409240742.png)
+![설명 텍스트](./img/202409240748.png)
