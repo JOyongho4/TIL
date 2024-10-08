@@ -95,9 +95,33 @@ split(문자열 원본, 나눌 기준이 되는 문자)
 replace(문자열 원본, 찾을 단어, 바꿀 단어)
     replace("안녕하세요","안녕","실천")
     -> "실천하세요"
-
-
-
-
 ```
 ![설명 텍스트](./img/10081125.png)
+```
+4-4 날짜 및 시간 데이터 이해하기(1)
+(타임존, UTC, Millisecond, TIMESTAMP/DATATIME)
+
+1. 날짜 및 시간 데이터 타입 파악 (DATE, DATETIME, TIMESTAMP)
+2. 날짜 및 시간 데이터 관련 알면 좋은 내용
+3. 날짜 및 시간 데이터 타입 변환
+4. 시간 함수 (두 시간의 차이, 특정 부분 추출)
+
+DATE : 날짜만 (YYYY-MM-DD)
+DATETIME : DATE + TIME (YYYY-MM-DD HH-MM-SS)
+TIME : 날짜 무관 시간만 (HH-MM-SS)
+
+타임존 : 시차
+        GMT : 그리니치 천문대 기준으로 시간 차이 조정 (GMT +9)
+        UTC : 국제적인 표준 시간 (UTC +9)
+        TIMESTAMP : 시간 도장, UTC로 부터 경과한 시간, TIME Zone 정보
+
+milliseconds(ms) : 천 분의 1초 ex) 1704176819711ms
+microseconds(us) : 1/1000ms
+둘다 timestamp로 변환 (timestamp_millis, timestamp_micros)
+
+timestamp <-> datetime 변환을 해야 할 수 있음
+
+timestamp -> 타임존 UTC라고 나옴, 한국시간 - 9시간
+datetime -> 타임존 T가 나옴(time의미), 한국 zone 사용시 한국시간과 동일
+```
+![설명 텍스트](./img/10082036.png)
