@@ -125,3 +125,40 @@ group by
 order by
 diff desc
 ```
+```
+4-6 조건문
+
+조건문
+  특정 조건이 충족되면 어떤 행동을 하자
+
+사용법
+1. case when
+2. if
+
+ex)
+1~6학년 -> 저학년 고학년?
+월~일 -> 주중 주말?
+
+1. case when
+
+select
+
+case
+  when 조건1 then 조건1이 참일 경우 결과
+  when 조건2 then 조건2가 참일 경우 결과
+  else 그 외 조건일 경우 결과
+end as 새로운_칼럼_이름
+
+from...
+```
+![설명 텍스트](./img/11041930.png)
+```
+if문
+
+단일 조건일 경우 유용
+
+if (조건문, true일 때의 값, False일 때의 값) as 새로운_칼럼_이름
+
+select
+if(1=1,'동일한 결과','동일하지 않은 결과') as result1,...
+```
