@@ -90,6 +90,78 @@ left join만 잘 사용하자!
     join에서 연결할 값이 없으면 나타남
 ```
 ```
+5-6 JOIN 연습 문제 1~2번
+
+테이블을 그대로 쓸 필요는 없다
+경우에 따라 줄여 써도 됨
+```
+```
+1번
+어디서 어떤 열만 가져올것인지 조인 전에 생각하자
+가져올 열과 조건을 적고 괄호쳐서 진짜 from 문으로 쓰자
+조인은 일단 left로
+모호한 칼럼? 중복된 이름이 있는 경우, 테이블.칼럼으로 쓰면됨
+where은 from절 뒤로 빼도 되긴한데 데이터를 줄이는게 낫다
+where 1=1 , 항상 TRUE? where을 적되 조건을 안거는 경우?
+```
+![설명 텍스트](./img/11142204.png)
+```
+2번
+조인에서 어디가 왼쪽이냐
+내가 구하고자 하는 데이터가 제일 잘 저장된 것
+LEFT 조인으로 NULL이 생길지 안생길지 생각해보기
+count걸면 p.type1이 오류가 뜨는데 이유를 모르겠음
+
+select
+  p.type1 ,
+  count(tp.id) as pokemon_cnt
+from
+(
+select
+id,
+trainer_id,
+pokemon_id,
+status
+
+from
+basic.trainer_pokemon
+
+where
+status in ("Active","Training")
+) as tp
+left join basic.pokemon as p
+on tp.pokemon_id=p.id
+where
+type1='Grass'
+
+order by
+  2 desc
+
+```
+![설명 텍스트](./img/11142220.png)
+```
+5-6 JOIN 연습 문제 3~5번
+
+3번
+JOIN을 하면 갑자기 데이터가 많아지는 것 처럼 보임
+가령 Goh가 6마리 포켓몬을 소지하면, Goh가 6명이 되는 거 같음
+현장에서는 결측치가 있는지 조건 걸어보기
+count에서 distinct 항상 생각해보기
+```
+![설명 텍스트](./img/11142238.png)
+```
+4번
+조인이 여러번 나오면 많이 나오는 테이블을 왼쪽으로
+```
+![설명 텍스트](./img/11142251.png)
+```
+5번
+약어 정리 잘하자
+3세대가 있으면?
+where generation in (1,2)
+```
+![설명 텍스트](./img/11142302.png)
+```
 5-7 정리
 
 join은 여러 테이블을 연결하는 문법
