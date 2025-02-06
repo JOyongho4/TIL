@@ -123,3 +123,23 @@ print(dt.score(val_input, var_target))
     ㅇ 각각의 점수들을 평균내서 최종점수 산출
 ```
 ![이미지](./img/02062235.png)
+```
+<cross_validate()>
+
+    ㅇ 검증 세트를 떼어 내지 않고 훈련 세트 전체를 cross_validate() 함수에 전달
+    ㅇ 5-폴드 교차 검증 수행
+    ㅇ 최종 점수는 test_score에 담긴 5개의 점수의 평균
+    ㅇ 검증을 수행하면 이 모델에서 얻을 수 있는 최상의 검증 점수를 가늠할 수 있음
+    ㅇ 다만 이 함수는 훈련 세트를 섞지 않음 -> 분할기 지정 필요
+    ㅇ KFold (회귀), StratifiedKFold (분류)
+
+from sklearn.model_selection import cross_validate
+scores = cross_validate(dt, train_input, train_target)
+print(socre)
+
+<StratifiedKFold>
+
+splitter = StraitifiedKFold(n_splits=10, sguffle=True, random_state=42)
+scores = cross_validate(dt, train_input, train_target, cv=splitter)
+print(np.mean(scores['test_score']))
+```
