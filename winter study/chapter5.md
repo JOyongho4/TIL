@@ -103,4 +103,23 @@ dt = DecisionTreeClassifier(max_depth=3, random_state=42) 이런식으로
 
     ㅇ 트레인 세트와 테스트 세트 사이에 검증 세트(validation set)를 따로 만듦
     ㅇ train_test_split을 두번 사용
+
+*검증세트 분할*
+sub_input, val_input, sub_target, var_target = train_test_split(
+    train_input, train_target, test_size=0.2, random_state=42)
+
+*훈련세트로 훈련, 검증세트로 검증*
+from sklearn.tree import DecisionTreeClassfier
+dt= DecisionTreeClassifier(random_state=42)
+dt.fit(sub_input, sub_target)
+print(dt.score(sub_input, sub_target))
+print(dt.score(val_input, var_target))
 ```
+```
+<교차 검증>
+
+    ㅇ 검증 세트를 만들기에 훈련 세트의 양이 적어짐
+    ㅇ 교차 검증으로 훈련 때 쓰이는 데이터를 크게 할 수 있음
+    ㅇ 각각의 점수들을 평균내서 최종점수 산출
+```
+![이미지](./img/02062235.png)
