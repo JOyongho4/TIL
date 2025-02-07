@@ -143,3 +143,46 @@ splitter = StraitifiedKFold(n_splits=10, sguffle=True, random_state=42)
 scores = cross_validate(dt, train_input, train_target, cv=splitter)
 print(np.mean(scores['test_score']))
 ```
+**하이퍼파라미터 튜닝**
+```
+<하이퍼파라미터란>
+    ㅇ 모델이 학습할 수 없어서 사용자가 지정해야만하는 파라미터
+    ㅇ 매개변수를 바꿔가면서 모델 훈련
+    ㅇ 하나의 매개변수의 최적값을 찾고 다음 매개변수를 변경하면 최적값이 달라진다
+    -> 사이킷런의 GridSearchCV 클래스 사용
+        ㅇ 하이퍼파라미터 탐색과 교차검증을 한번에 수행
+
+from sklearn.model_selection import GridSearchCV
+params = {'min_impurity_decrease':[0.0001, 0.0002, 0.0003, 0.0004, 0.0005]}
+gs = gridSearchCV(DecisionTreeClassifier(random_state=42),params,n_jobs=-1)
+
+하이퍼파라미터를 찾으면 검증 점수가 가장 높은 모델의 매개변수 조합으로 전체 훈련세트에서 다시 모델을 훈련
+
+dt=gs.best_estimator_
+print(dt.score(train_input, train_target))
+
+<최적의 파라미터 확인>
+print(gs.best_params_)
+```
+```
+<랜덤 서치>
+
+    ㅇ 매개변수 값의 범위나 간격을 미리 정하기 어려울 수 있다.
+    ㅇ 매개 변수 조건이 너무 많아 그리드 서치에 시간이 오래걸릴 수 있다.
+    ㅇ 랜덤한 값을 적용
+
+from scipy.stats import uniform, randint
+    -> uniform은 실수, randint는 정수
+params = {'min_impurity_decrease': uniform(0.0001,0.001),
+'max_depth': randint(20,50),
+'min_samples_split': randint(2,25),
+'min_samples_leaf':randint(1,25),
+}
+
+from sklearn.model_selection import RandoizedSearchCV
+gs = RandomizedSearchCV(DecisionTreeClassifier(random_state=42), params, n_iter=100, n_jobs=-1, random_state=42)
+gs.fit(train_input, train_target)
+```
+```
+
+```
