@@ -182,3 +182,93 @@ plt.xlabel('k')
 plt.ylabel('inertia')
 plt.show()
 ```
+## 6-3 주성분 분석
+
+**차원과 차원축소**
+```
+<차원 축소>
+
+    ㅇ 차원을 줄이면 저장공간을 줄일 수 있다
+    ㅇ 특성이 많으면 과적합의 문제가 있음
+    ㅇ 데이터를 잘 나타내는 일부 특성만 선택하면 성능을 향상할 수 있다
+```
+```
+<주성분 분석, PCA>
+
+    ㅇ 데이터에 있는 분산이 큰 방향을 찾는 것
+    ㅇ 분산이 큰 방향이 주성분 벡터
+```
+![이미지](./img/02072356.png)
+```
+<PCA 클래스>
+
+from sklearn.decomposition import PCA
+pca = PCA(n_components=50)
+pca.fit(fruits_2d)
+
+fruits_pca = pca.transform(fruits_2d)
+print(fruits_pca.shape)
+-> 10000개의 픽셀을 50으로 줄인 효과
+```
+```
+<재구성>
+
+    ㅇ inverse_transform() 메서드로 다시 복구 가능
+
+fruits_inverse = pca.inverse_transform(fruits_pca)
+print(fruits_inverse.shape)
+
+<100*100으로>
+
+fruits_reconstruct = fruits_inverse.reshape(-1,100,100)
+for start in [0,100,200]:
+    draw_fruits(fruits_reconstruct[start:start+100])
+    print("/n")
+```
+```
+<설명된 분산>
+
+    ㅇ 주성분이 원본 데이터의 분산을 얼마나 잘 나타내는지 기록한 값
+    ㅇ explained_variance_ratio_에 기록
+
+print(np.sum(pca.explained_variance_ratio_))
+
+<그래프 시각화>
+
+plt.plot(pca.explained_variance_ratio_)
+plt.show()
+```
+**다른 알고리즘과 함께 사용**
+```
+코드
+from sklearn.linear_model import LogisticRegression
+lr = LogisticRegression()
+
+target = np.array([0]*100 + [1]*100 + [2]*100)
+```
+```
+<10000개의 특성>
+
+    ㅇ 정확도 99, 훈련시간 0.94초
+<50개의 특성>
+
+    ㅇ 정확도 100, 훈련시간 0.03초
+
+<2개의 특성>
+
+    ㅇ 정확도 99, 훈련시간 0.04초
+```
+```
+<분산의 비율로 주성분 갯수 찾기>
+
+pca = PCA(n_components=0.5)
+pca.fit(fruits_2d)
+
+    ㅇ 단 2개의 특성만으로 분산의 50% 설명가능
+```
+```
+<차원 축소의 장점>
+
+    ㅇ 시각화 용이
+        ㅇ 3차원 이하로 줄이면 화면에 출력 용이
+```
