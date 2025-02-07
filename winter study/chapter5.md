@@ -1,6 +1,6 @@
 # 트리 알고리즘
 
-## 5-1
+## 5-1 결정 트리
 <br/>
 
 **메서드**
@@ -88,7 +88,7 @@ dt = DecisionTreeClassifier(max_depth=3, random_state=42) 이런식으로
 ```
 
 
-## 5-2
+## 5-2 교차 검증과 그리드 서치
 
 
 **테스트 일반화?**
@@ -179,10 +179,128 @@ params = {'min_impurity_decrease': uniform(0.0001,0.001),
 'min_samples_leaf':randint(1,25),
 }
 
-from sklearn.model_selection import RandoizedSearchCV
+from sklearn.model_selection import RandomizedSearchCV
 gs = RandomizedSearchCV(DecisionTreeClassifier(random_state=42), params, n_iter=100, n_jobs=-1, random_state=42)
 gs.fit(train_input, train_target)
-```
+
+print(np.max(gs.cv_results_['mean_test_score']))
+
+dt = gs.best_estimator_
+print(dt.score(test_input, test_target))
 ```
 
+## 5-3 트리의 앙상블
+
+**랜덤 포레스트**
+```
+<앙상블 학습>
+    
+    ㅇ  여러 개의 개별 모델을 조합하여 최적의 모델로 일반화하는 방법
+
+<랜덤 포레스트>
+
+    ㅇ 결정 트리를 랜덤하게 만들어 숲을 만드는 모델
+    ㅇ 과적합에 강함
+    ㅇ 안정적인 성능
+    ㅇ DecisionTreeClassifier가 제공하는 매개변수를 모두 제공
+
+<부트스트랩 샘플>
+
+    ㅇ 랜덤포레스트에서 훈련을 위해 데이터를 랜덤하게 뽑는 법
+    ㅇ 복원추출?
+    ㅇ 기본적으로 훈련 데이터와 동일한 크기로 만듬
+
+<RandomForestClassifier>
+
+    ㅇ 전체 특성 개수의 제곱근만큼의 특성을 선택
+    ㅇ 전체 4개의 특성이 있으면 노드마다 2개를 랜덤하게 선택
+
+<RandomForestRegressor>
+
+    ㅇ 전체 특성을 모두 사용
+
+from sklearn.model_selection import cross_validate
+from sklearn.ensemble import RandomForestClassifier
+rf = RandomForesrClassifier(n_jobs = -1, random_state=42)
+scores = cross_validate(rf, train_input, train_target,
+return_train_score=True, n_jobs=-1)
+print(np.mean(scores['train+score']),np.mean(scores['test_score']))
+
+<특성 중요도 추출>
+
+rf.fit(train_input, train_target)
+print(rf.feature_importances_)
+```
+```
+<OOB 샘플>
+
+    ㅇ 부트스트랩에 소외된 샘플
+    ㅇ 이를 마치 검증 세트처럼 사용가능
+
+rf = RandomForestClassifier(oob_score=True, n_jobs=-1, random_state=42)
+rf.fit(train_input, train_target)
+print(rf.oob_score_)
+```
+```
+<엑스트라 트리>
+
+    ㅇ 랜덤 포레스트와 비슷
+    ㅇ 부트스트랩 대신 전체 훈련세트 사용
+    ㅇ 노드 분할 시 무작위로 분할
+    ㅇ 과대적합을 막고 검증 세트의 점수를 높이는 효과가 있음
+
+from sklearn.ensemble import ExtraTreesClassifier
+et = ExtraTreesClassifier(n_jobs=-1, random_sate=42)
+scores = cross_validate(et, train_input, train_target,
+        return_train_score=True, n_jobs=-1)
+print(np.mean(scores['train_score']),np.mean(scores['test_score']))
+
+et.fit(train_input, train_target)
+print(et.feature_importances_)
+```
+```
+<그레이디언트 부스팅>
+
+    ㅇ 깊이가 얕은 결정 트리를 사용하여 이전 트리의 오차를 보완
+    ㅇ 과대적합에 강하고 높은 일반화 성능
+    ㅇ 경사 하강법 사용
+
+from sklearn.ensemble import GradientBoostingClassifier
+gb = GradientBoostingClassifier(n_estimators=100, learning_rate=0.1, random_state=42)
+scores = cross_validate(gb, train_input, train_target,
+            return_train_score=True, n_jobs=-1)
+print(np.mean(scores['train_score']),np.mean(scores['test_score']))
+```
+```
+<히스토그램 기반 그레이디언트 부스팅>
+
+    ㅇ 입력특성을 256개 구간으로 나눔
+    ㅇ 누락된 값 전처리할 필요가 없음
+    ㅇ 노드를 분할할 때 최적의 분할을 빠르게 찾을 수 있음
+
+<HistGradientBoostingClassifier>
+
+    ㅇ 트리 개수 지정에 max_iter 사용
+    ㅇ 코랩에서는 XGBOOST로 사용가능
+
+from sklearn.experimental import enable_hist_gradient_boosting
+from sklearn.ensemble import HistGradientBoostingClassifier
+hgb = HisGradientBoostingClassifier(random_state=42)
+scores = cross_validate(hgb, train_input, train_target, return_train_score=True)
+print(np.mean(scores['train_score']),np.mean(scores['test_scores']))
+
+
+<XGBoost>
+
+from xgboost import XCBClassifier
+xgb = XGBClassifier(tree_method='hist', random_state=42)
+scores = cross_validate(xgb, train_input, train_target, return_train_score=True)
+print(np.mean(scores['train_score']), np.mean(scores['test_score']))
+
+
+<LightGBM>
+
+from lightgbm import LGBMClassifier
+lgb = LGBMClassfier(random_state=42)
+scores = cross_validate(lgb, train_input, train_target, return_train_score=True, n_jobs=-1)
 ```
