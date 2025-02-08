@@ -134,6 +134,7 @@ plt.show()
     ㅇ 평균값 = 센트로이드
 ```
 ![이미지](./img/02072231.png)
+![이미지](./img/02081056.png)
 ```
 from sklearn.cluster import KMeans
 km = KMeans(n_clusters=3, random_state=42)
@@ -185,6 +186,7 @@ plt.show()
 ## 6-3 주성분 분석
 
 **차원과 차원축소**
+![이미지](./img/02081054.png)
 ```
 <차원 축소>
 
