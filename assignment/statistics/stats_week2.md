@@ -189,6 +189,7 @@ id | name|department_name|
 |1| Alice   | HR     |
 |2| Bob   | IT   |
 
+<br>
 
 ***풀 조인***
 
@@ -225,7 +226,25 @@ id | name|department_name|
 ```
 ![이미지](./img/02142043.png)
 
+**ERD**
 
+```
+<ERD>
+
+    ㅇ 각 테이블의 구성 정보와 테이블 간 관계를 도식으로 표현
+    ㅇ 물리와 논리로 구분
+    ㅇ 물리는 DB를 효율적이고 결점 없이 구현하는 것
+    ㅇ 논리는 데이터 사용자 입장에서 테이블 간 매핑에 오류가 없으며 데이터의 정규화가 이루어진 것
+    ㅇ 데이터 분석가는 논리 ERD를 보고 DB 구조 파악 
+```
+```
+기본키 : 테이블에 적재된 각각의 데이터를 유일하게 구분하는 키
+        중복 불가, 결측값 불가
+
+외래키 : 각 테이블 간에 연결을 만들기 위해서 테이블의 참조되는 기본 키 
+```
+
+![이미지](./img/02142051.png)
 <br>
 <br>
 
@@ -247,30 +266,31 @@ id | name|department_name|
 ### 1-1. 
 ![TABLE](https://github.com/ejejbb/Template/raw/main/File/2-1.PNG)
 ```
-여기에 답을 작성해주세요!
+LEFT
 ```
 
 ### 1-2. 
 ![TABLE](https://github.com/ejejbb/Template/raw/main/File/2-3.PNG)
 ```
-여기에 답을 작성해주세요!
+INNER
 ```
 
 ### 1-3. 
 ![TABLE](https://github.com/ejejbb/Template/raw/main/File/2-2.PNG)
 ```
-여기에 답을 작성해주세요!
+RIGHT
 ```
 
 ### 1-4. 
 ![TABLE](https://github.com/ejejbb/Template/raw/main/File/2-4.PNG)
 ```
-여기에 답을 작성해주세요!
+FULL
 ```
 
 ### 1-5. CROSS JOIN을 수행할 경우, 결과 테이블의 행 개수는 몇 개인가요?
 ```
-여기에 답을 작성해주세요!
+9 * 5 = 45
+45개
 ```
 
 ## 문제 2.
@@ -297,7 +317,19 @@ id | name|department_name|
 <!--참고. 기본키는 각 엔터티에서 레코드를 고유하게 식별하기 위해 설정됩니다-->
 
 ```
-여기에 답을 작성해주세요!
+1번
+
+    ㅇ 도서 테이블 (도서 ID, 제목, 저자)
+    ㅇ 회원 테이블 (회원 ID, 이름, 가입 날짜)
+    ㅇ 대출 테이블 (대출 ID, 대출 날짜, 반납 날짜, 회원 ID, 도서 ID) ?
+
+2번
+
+    ㅇ 도서 ID, 회원 ID, 대출 ID
+
+3번
+
+    ㅇ 도서 1 - N 대출 N - 1 회원
 ```
 
 ### 🎉 수고하셨습니다.
