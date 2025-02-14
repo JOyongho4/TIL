@@ -82,5 +82,58 @@ model = keras.Sequential(dense)
 
 model.compile(loss='sparse_categorical_coressentropy',metrics='accuracy')
 ```
-```
 
+## 7-2 심층 신경망
+
+**2개의 층**
+
+```
+<은닉층>
+
+    ㅇ 입력층과 출력층 사이에 있는 모든 층
+    ㅇ 활성화 함수 : 신경망 층의 선형 방정식의 계산 값에 적용하는 함수
+    ㅇ 이진분류 : 시그모이드, 다중분류 : 소프트맥스
+```
+```
+<시그모이드 함수>
+
+    ㅇ 뉴런의 값을 0과 1 사이로 압축
+
+dense1 = keras.layers.Dense(100, activation='sigmoid', input_shape=(784,))
+dense2 = keras.layers.Dense(10, activation='softmax')
+
+-> dense1은 은닉층이고 100개의 뉴런을 가진 밀집층
+    뉴런 개수를 정할때는 적어도 출력층의 뉴런보다는 많게 해야함
+-> dense2는 출력층, 10개의 클래스를 분류하므로 10개의 뉴런을 둠
+    활성화함수는 소프트맥스 함수로 지정
+```
+**심층 신경망 만들기**
+```
+model = keras.Sequential([dense1, dense2])
+```
+인공신경만의 강력한 성능은 층을 추가하여 입력 데이터에 대해 연속적인 학습을 진행하는 능력에서 나옴
+```
+model = keras.Sequential([
+    keras.layers.Dense(100, activation='sigmoid', input_shape=(784,),
+    name='hidden')
+    keras.layers.Dense(10, activation='softmax',name='output')
+    ], names='패션 MNIST 모델')
+```
+**렐루 함수**
+```
+초창기 인공 신경망의 은닉층에 많이 사용된 활성화 함수는 시그모이드
+시그모이드의 단점은 끝으로 갈수록 그래프가 누워있기 때문에 올바른 출력을 만드는데 신속하게 대응하지 못함
+그 대안으로 나온것이 렐루 함수
+    -> 음수=0, 양수-> 입력 통과 , max(0,z)
+```
+**옵티마이저**
+```
+케라스는 다양한 종류의 경사 하강법 알고리즘을 제공하는데 이를 옵티마이저라고 부름
+가장 기본 옵티마이저 : 확률적 경사 하강법 SGD
+```
+**적응적 학습률**
+```
+모델의 최적점에 가까이 갈수록 학습률을 낮출 수 있음
+학습률 매개변수를 튜닝하는 수고를 덜 수 있는것이 장점
+대표적인 옵티마이저는 Adagrad와 RMSprop
+```
