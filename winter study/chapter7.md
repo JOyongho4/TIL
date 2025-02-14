@@ -6,6 +6,14 @@
 **인공 신경망**
 
 ```
+<인공 신경망>
+
+    ㅇ 출력층 : 신경망의 최종 값
+    ㅇ z 값 : 활성화 함수의 입력
+    ㅇ 뉴런 : z 값을 계산하는 단위, z 값이 작으면 비활성화 될 수도 있음
+    ㅇ 입력층 : 픽셀값 자체
+```
+```
 <텐서플로>
 
     ㅇ 머신러닝과 달리 딥러닝 라이브러리는 GPU를 사용하여 인공 신경망을 훈련
@@ -51,6 +59,7 @@ train_scaled = train_scaled.reshape(-1,28*28)
 <dense 클래스>
 
     ㅇ 밀집층 생성
+    ㅇ 뉴런은 타킷 변수 숫자로
 
 dense = keras.layers.Dense(10, activation='softmax',input_shape=(784,))
 
@@ -63,14 +72,15 @@ model = keras.Sequential(dense)
 ```
 **분류하기**
 ```
+<케라스 모델>
+
     ㅇ 케라스 모델은 훈련하기 전에 설정 단계가 있음
     ㅇ model 객체의 compile() 메서드에서 수행
     ㅇ 꼭 지정해야 할 것은 손실 함수의 종류
+    ㅇ 음성샘플은 0이기에 어떤 곱이든 0이 되므로 1로 바꿔서 계산 (1-타깃값)
+    ㅇ 각 클래스에 대한 확률이 모두 출력되기 때문에 타깃에 해당하지 않는 나머지 확률에는 0을 곱함 (다중)
 
 model.compile(loss='sparse_categorical_coressentropy',metrics='accuracy')
 ```
 ```
-<인공 신경망 모델로 성능 향상>
 
-    ㅇ 
-```
