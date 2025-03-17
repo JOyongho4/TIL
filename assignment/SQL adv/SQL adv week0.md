@@ -200,3 +200,63 @@ WHERE cte1.a = cte2.c;
 - table1의 a, b를 cte1으로, table2의 c, d를 cte2로 함
 - cte1.a와 cte2.c가 동일한 것들을 cte1에서 cte2와 조인함 (그럼 칼럼은 a,b,c,d로 됨)
 - 그 중 b, d select
+
+```
+WITH cte (col1, col2) AS
+(
+  SELECT 1, 2
+  UNION ALL
+  SELECT 3, 4
+)
+SELECT col1, col2 FROM cte;
+```
+- col1과 col2를 가지는 cte테이블을 만듬
+- (1,2) 와 (3,4)의 행을 만들어 유니온함
+- cte에서 col1과 col2 열을 조회
+
+```
+WITH cte AS
+(
+  SELECT 1 AS col1, 2 AS col2
+  UNION ALL
+  SELECT 3, 4
+)
+SELECT col1, col2 FROM cte;
+```
+- 위와 동일
+
+<br/>
+- GPT 예제
+```
+WITH
+    cte1 AS (
+        SELECT column1, column2
+        FROM table1
+    ),
+    cte2 AS (
+        SELECT column3, column4
+        FROM table2
+    )
+SELECT *
+FROM cte1
+JOIN cte2
+ON cte1.column1 = cte2.column3;
+```
+- table1에서 coulumn1, 2를 뽑아 cte1 지정, 같은 원리로 cte2 지정
+- cte1에 cte2 조인
+- 조건은 (ON) cte1.column1 = cte2.column3;
+
+- CTE는 자체 또는 다른 CTE 참조가능
+
+# 문제
+## 많이 주문한 테이블
+
+![설명 텍스트](./img/03172128.png)
+
+## 레스토랑의 대목
+
+![설명 텍스트](./img/03172154.png)
+아니 왜 in은 되는데 = any는 안됨???
+
+## 식품분류별 가장 비싼 식품의 정보 조회하기 
+![설명 텍스트](./img/03172231.png)
