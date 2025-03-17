@@ -12,6 +12,8 @@
 
 15.2.15.10 Subquerey Errors
 
+15.2.20 WITH, Common Table Expressions (CTE)
+
 ## 15.2.15.2. Subqueries
 서브쿼리는 select 명령문 내의 명령문
 ```
@@ -156,3 +158,45 @@ WHERE NOT EXISTS (SELECT *
                     cities_stores.store_type = stores.store_type);
 ```
 EXIST의 반대, 모두 존재하지 않으면 TRUE
+
+## 15.2.15.10 Subquerey Errors
+파생 테이블?
+
+- 쿼리 절의 범위 내에서 테이블을 생성하는 표현식
+```
+SELECT ...
+FROM (subquery) [AS] tbl_name ...
+```
+
+- GPT 예제
+```
+SELECT *
+FROM (SELECT name, salary FROM employees) AS emp_sub
+WHERE salary > 70000;
+```
+![설명 텍스트](./img/03172054.png)
+![설명 텍스트](./img/03172055.png)
+![설명 텍스트](./img/03172056.png)
+
+## 15.2.20 WITH , Common Table Expressions (CTE)
+CTE는 단일 명령문의 범위 내에 존재하는 명명된 임시 결과 집합
+나중에 해당 명령문 내에서 여러 번 참조될 수 있다
+
+<br/>
+CTE로 지정하려먼 WITH 쉼표로 구분된 하위 절이 하나 이상 있는 절을 사용
+각 하위 절은 결과 집합을 생성하는 하위 쿼리를 제공하고 이름을 하위 쿼리와 연결
+
+솔직히 무슨 말인지 모르겠다
+
+```
+WITH
+  cte1 AS (SELECT a, b FROM table1),
+  cte2 AS (SELECT c, d FROM table2)
+SELECT b, d
+FROM cte1
+JOIN cte2
+WHERE cte1.a = cte2.c;
+```
+- table1의 a, b를 cte1으로, table2의 c, d를 cte2로 함
+- cte1.a와 cte2.c가 동일한 것들을 cte1에서 cte2와 조인함 (그럼 칼럼은 a,b,c,d로 됨)
+- 그 중 b, d select
