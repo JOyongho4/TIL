@@ -264,3 +264,109 @@ mysql> SELECT
 - RANK()       OVER w AS 'rank', : 중복된 값에 같은 순위 부여, 뒤에 오는 값은 순위 건너 뜀 (공동1등, 공동1등, 3등)
 
 - DENSE_RANK() OVER w AS 'dense_rank' : 순위 건너뛰지 않음 (공동1등, 공동1등, 2등)
+
+
+## 14.20.4 Named Windows
+
+- Windows는 절에서 참조할 수 있는 이름을 지정할 수 있음
+
+```SQL
+SELECT
+  val,
+  ROW_NUMBER() OVER (ORDER BY val) AS 'row_number',
+  RANK()       OVER (ORDER BY val) AS 'rank',
+  DENSE_RANK() OVER (ORDER BY val) AS 'dense_rank'
+FROM numbers;
+```
+
+이걸 좀더 간단하게
+
+```SQL
+SELECT
+  val,
+  ROW_NUMBER() OVER w AS 'row_number',
+  RANK()       OVER w AS 'rank',
+  DENSE_RANK() OVER w AS 'dense_rank'
+FROM numbers
+WINDOW w AS (ORDER BY val);
+```
+
+```SQL
+SELECT
+  DISTINCT year, country,
+  FIRST_VALUE(year) OVER (w ORDER BY year ASC) AS first,
+  FIRST_VALUE(year) OVER (w ORDER BY year DESC) AS last
+FROM sales
+WINDOW w AS (PARTITION BY country);
+```
+이런식으로 오름, 내림 차순 혼용가능
+
+
+## 14.19.1 Aggregate Function Descriptions
+
+![설명 텍스트](./img/03202135.png)
+
+- 대부분의 집계함수를 WINDOW로 사용가능
+- 보통 NULL값 무시
+- 일반적으로 GROUP BY와 함께 사용
+
+```SQL
+mysql> SELECT student_name, AVG(test_score)
+       FROM student
+       GROUP BY student_name;
+```
+
+GROUP_CONCAT(expr)?
+- 여러 행의 값을 하나의 문자열로 결합하는 기능
+- 동일한 그룹 내에 각 행의 expr값을 쉼표로 구분하여 결함
+
+
+```SQL
+mysql> SELECT o_id, attribute, value FROM t3;
++------+-----------+-------+
+| o_id | attribute | value |
++------+-----------+-------+
+|    2 | color     | red   |
+|    2 | fabric    | silk  |
+|    3 | color     | green |
+|    3 | shape     | square|
++------+-----------+-------+
+4 rows in set (0.00 sec)
+
+mysql> SELECT o_id, JSON_ARRAYAGG(attribute) AS attributes
+    -> FROM t3 GROUP BY o_id;
++------+---------------------+
+| o_id | attributes          |
++------+---------------------+
+|    2 | ["color", "fabric"] |
+|    3 | ["color", "shape"]  |
++------+---------------------+
+2 rows in set (0.00 sec)
+```
+o_id 별로 attribute 칼럼의 값을 JSON 배열로 묶어서 출력
+
+
+```SQL
+mysql> SELECT o_id, attribute, value FROM t3;
++------+-----------+-------+
+| o_id | attribute | value |
++------+-----------+-------+
+|    2 | color     | red   |
+|    2 | fabric    | silk  |
+|    3 | color     | green |
+|    3 | shape     | square|
++------+-----------+-------+
+4 rows in set (0.00 sec)
+
+mysql> SELECT o_id, JSON_OBJECTAGG(attribute, value)
+    -> FROM t3 GROUP BY o_id;
++------+---------------------------------------+
+| o_id | JSON_OBJECTAGG(attribute, value)      |
++------+---------------------------------------+
+|    2 | {"color": "red", "fabric": "silk"}    |
+|    3 | {"color": "green", "shape": "square"} |
++------+---------------------------------------+
+2 rows in set (0.00 sec)
+```
+
+JSON에 대해 더 공부할 필요가 있을듯 하다
