@@ -370,3 +370,32 @@ mysql> SELECT o_id, JSON_OBJECTAGG(attribute, value)
 ```
 
 JSON에 대해 더 공부할 필요가 있을듯 하다
+
+## 문제1
+![설명 텍스트](./img/03221400.png)
+
+## 문제2
+```sql
+WITH pm10_data AS (
+    SELECT
+        measured_at AS today,
+        pm10,
+        LEAD(measured_at) OVER (ORDER BY measured_at) AS next_day,
+        LEAD(pm10) OVER (ORDER BY measured_at) AS next_pm10
+    FROM
+        measurements
+)
+SELECT
+    today,
+    next_day,
+    pm10,
+    next_pm10
+FROM
+    pm10_data
+WHERE
+    next_pm10 > pm10;
+```
+![설명 텍스트](./img/03221453.png)
+하 GPT가 풀어줌....
+
+## 문제3
