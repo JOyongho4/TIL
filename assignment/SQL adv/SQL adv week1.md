@@ -399,3 +399,33 @@ WHERE
 하 GPT가 풀어줌....
 
 ## 문제3
+```SQL
+WITH review_count AS (
+    -- 각 회원별 리뷰 수 계산
+    SELECT
+        mp.MEMBER_NAME,
+        rr.REVIEW_TEXT,
+        DATE_FORMAT(rr.REVIEW_DATE, '%Y-%m-%d') AS REVIEW_DATE,
+        rr.MEMBER_ID,
+        COUNT(*) OVER (PARTITION BY rr.MEMBER_ID) AS review_count
+    FROM MEMBER_PROFILE mp
+    JOIN REST_REVIEW rr
+    ON mp.MEMBER_ID = rr.MEMBER_ID
+),
+max_review AS (
+    -- 가장 많은 리뷰 수 계산
+    SELECT MAX(review_count) AS max_count
+    FROM review_count
+)
+-- 가장 많은 리뷰를 작성한 회원의 리뷰 조회
+SELECT
+    rc.MEMBER_NAME,
+    rc.REVIEW_TEXT,
+    rc.REVIEW_DATE
+FROM review_count rc
+JOIN max_review mr
+ON rc.review_count = mr.max_count
+ORDER BY rc.REVIEW_DATE ASC, rc.REVIEW_TEXT ASC;
+
+```
+하... GPT의 힘을 빌림
