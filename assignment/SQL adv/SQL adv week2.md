@@ -135,17 +135,31 @@ FROM 테이블
 ```
 <w/>
 - 옵션
+<w/>
+<w/>
 DISITNCT : 중복 제거
+
 ALL : 중복 포함
+
 HIGH_PRIOIRTY : SELECT를 UPDATE보다 우선 실행
+
 STRAIGHT_JOIN : JOIN 순서를 FROM에 나열된 선수대로 강제
+
 SQL_SMALL_RESULT, SQL_BIG_RESULT : GROUP BY 또는 DISTINCT 시 회적화 힌트
+
 SQL_BUFFER_RESULT : 결과를 임시 테이블에 저장해 락을 빨리 해제
+
 
 <w/>
 - 조건 및 정렬
+<w/>
+<w/>
 WHERE : 행 필터링
+
 GROUP BY : 그룹 지정
+
 HAVING : 그룹 필터링
+
 ORDER BY : 정렬
+
 LIMIT : 결과 개수 제한
