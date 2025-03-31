@@ -165,3 +165,19 @@ HAVING : 그룹 필터링
 ORDER BY : 정렬
 
 LIMIT : 결과 개수 제한
+
+
+- HAVING : GROUP BY로 묶인 그룹에 대한 조건 필터링
+- WHERE은 행 단위 필터링, HAVING은 그룹 단위 필터링
+
+```SQL
+SELECT user, MAX(salary)
+FROM users
+GROUP BY user
+HAVING MAX(salary) > 10000;
+```
+-> 각 사용자별로 최고 연봉을 구하고, 그 값이 1만 초과인 그룹만 출력
+
+![설명 텍스트](./img/03312233.png)
+
+![설명 텍스트](./img/03312034.png)
