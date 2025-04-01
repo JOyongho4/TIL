@@ -241,3 +241,294 @@ upper_band_17 = rolling_mean_17 + num_std * rolling_std_17
 lower_band_17 = rolling_mean_17 - num_std * rolling_std_17
 ```
 -> 9일 17일 동일한 수행
+<w/>
+
+
+
+
+```py
+# Plotting 5d
+plt.figure(figsize=(20,7))
+plt.plot(df['Close'], label='Stock Price')
+plt.plot(rolling_mean_5, label='SMA5', color='red')
+plt.plot(upper_band_5, label='Upper Bollinger Band', color='green')
+plt.plot(lower_band_5, label='Lower Bollinger Band', color='green')
+plt.fill_between(np.arange(window_size-1, len(df['5d_sma'])), lower_band_5, upper_band_5, color='grey', alpha=0.2)
+plt.title('Bollinger Bands (5d)')
+plt.xlabel('Days')
+plt.ylabel('Price')
+plt.legend()
+plt.grid(True)
+plt.show()
+```
+-> SMA5를 기준으로 한 볼린저 밴드
+-> 실제 가격 흐름(close), 5일 이동 평균선(SMA5), 위아래 볼린저 밴드(upper, lower_band5)
+
+
+
+
+
+```py
+df['Days'] = df.index + 1
+```
+-> 날짜 칼럼 추가
+
+
+
+```py
+_5d = df[['Open','High','Low','Days', '5d_sma','Volume','Close']].copy(deep=True)
+_9d = df[['Open','High','Low','Days', '9d_sma','Volume','Close']].copy(deep=True)
+_17d = df[['Open','High','Low','Days', '17d_sma','Volume','Close']].copy(deep=True)
+_all = df[['Open','High','Low','Days', '5d_sma', '9d_sma', '17d_sma','Volume','Close']].copy(deep=True)
+```
+-> 5d_SAM, 9d_SMA, 17d_SMA에 따라 새로운 df생성, .copy(deep=True) : 원본과 독립적
+
+
+
+
+
+```py
+scaler = MinMaxScaler(feature_range=(0,2)).fit(_5d.Low.values.reshape(-1,1))
+_5d['Open'] = scaler.transform(_5d.Open.values.reshape(-1,1))
+_5d['High'] = scaler.transform(_5d.High.values.reshape(-1,1))
+_5d['Low'] = scaler.transform(_5d.Low.values.reshape(-1,1))
+_5d['Close'] = scaler.transform(_5d.Close.values.reshape(-1,1))
+_5d['Volume'] = scaler.transform(_5d.Volume.values.reshape(-1,1))
+_5d['Days'] = scaler.transform(_5d.Days.values.reshape(-1,1))
+_5d['5d_sma'] = scaler.transform(_5d['5d_sma'].values.reshape(-1,1))
+```
+-> 다양한 범위의 숫자값들을 0~2로 맞춰주는 작업
+
+-> reshape(-1,1) -> ID 벡터를 2차원 배열로 변환 (필수)
+
+-> 1차원 배열을 2차월 '열 벡터' 형태로 바꾸는 것, 입력 데이터를 항상 2차원 형태로 해야함
+
+
+
+
+
+```py
+data_5d_all = _5d[['Open','High','Low','Close', '5d_sma', 'Volume', 'Days']].values
+```
+-> _5d 데이터프레임에서 7개의 칼럼만 선택하고, 넘파이 배열로 변환
+
+
+
+- 잠깐!! 넘파이와 판다스?
+넘파이는 행렬 집합/계산 느낌, 판다스는 엑셀 시트 느낌
+
+
+```py
+seq_len= 11
+sequences_5d_all=[]
+for index in range(len(data_5d_all) - seq_len + 1):
+    sequences_5d_all.append(data_5d_all[index: index + seq_len])
+sequences_5d_all = np.array(sequences_5d_all)
+print(sequences_5d_all.shape)
+```
+-> 원래 데이터(data_5d_all)에서 길이 11짜리 시퀸스를 한 칸씩 밀면서 생성
+```예제
+[[1]
+[2]
+[3]
+[4]
+[5]
+[6]
+[7]]
+
+에서
+seq_len = 4, for i in range(len(data) - seq_len + 1) 이면
+
+[[1]
+ [2]
+ [3]
+ [4]]
+
+[[2]
+ [3]
+ [4]
+ [5]]
+
+[[3]
+ [4]
+ [5]
+ [6]]
+이런식으로
+```
+
+
+
+
+```py
+valid_set_size_percentage = 10
+test_set_size_percentage = 10
+```
+-> 검증 10%, 테스트 10% 사용, 나머지는 80%
+
+
+
+
+```py
+valid_set_size_5d_all = int(np.round(valid_set_size_percentage/100*sequences_5d_all.shape[0]))
+test_set_size_5d_all  = int(np.round(test_set_size_percentage/100*sequences_5d_all.shape[0]))
+train_set_size_5d_all = sequences_5d_all.shape[0] - (valid_set_size_5d_all + test_set_size_5d_all)
+```
+-> 훈련, 검증, 테스트를 일정 비율로 데이터 크기 계산
+
+
+
+```py
+x_train_5d_all = sequences_5d_all[:train_set_size_5d_all,:-1,:]
+y_train_5d_all = sequences_5d_all[:train_set_size_5d_all,-1,:]
+```
+-> x_train : 10일치 입력, y_train : 11번째 날의 출력
+
+```py
+x_valid_5d_all = sequences_5d_all[train_set_size_5d_all:train_set_size_5d_all+valid_set_size_5d_all,
+                                  :-1,:]
+y_valid_5d_all = sequences_5d_all[train_set_size_5d_all:train_set_size_5d_all+valid_set_size_5d_all
+                                  ,-1,:]
+```
+-> x_valid : 10일치 입력, y_train : 11번째 날 타겟
+
+```py
+x_test_5d_all = sequences_5d_all[train_set_size_5d_all+valid_set_size_5d_all:,:-1,:]
+y_test_5d_all = sequences_5d_all[train_set_size_5d_all+valid_set_size_5d_all:,-1,:]
+```
+->
+
+train_set_size_5d_all+valid_set_size_5d_all:  :  학습 + 검증 세트를 제외한 마지막 부분
+
+
+:-1   : 시퀀스에서 마지막 시점 제외
+
+
+-1   : 시퀀스의 마지막 시점 -> 예측 타겟 y
+
+
+
+
+
+```py
+x_train_5d_all = torch.tensor(x_train_5d_all).float()
+y_train_5d_all = torch.tensor(y_train_5d_all).float()
+
+x_valid_5d_all = torch.tensor(x_valid_5d_all).float()
+y_valid_5d_all = torch.tensor(y_valid_5d_all).float()
+```
+-> 넘파이를 Pytorch Tensor로 변환
+
+
+```py
+train_dataset_5d_all = TensorDataset(x_train_5d_all,y_train_5d_all)
+```
+-> 두 개 이상의 텐서를 묶어서 샘플 단위로 관리하는 Pytorch 도구
+
+
+```py
+train_dataloader_5d_all = DataLoader(train_dataset_5d_all, batch_size=32, shuffle=False)
+```
+-> 모델 학습 시 데이터를 미니배치 단위로 자동 분할해서 공급
+
+
+```py
+valid_dataset_5d_all = TensorDataset(x_valid_5d_all,y_valid_5d_all)
+valid_dataloader_5d_all = DataLoader(valid_dataset_5d_all, batch_size=32, shuffle=False)
+```
+
+
+
+
+
+```py
+class NeuralNetwork(nn.Module):
+    def __init__(self, num_feature):
+        super(NeuralNetwork, self).__init__()
+        self.lstm  = nn.LSTM(num_feature,64,batch_first=True)
+        self.fc    = nn.Linear(64,num_feature)
+
+
+    def forward(self, x):
+        output, (hidden, cell) = self.lstm(x)
+        x = self.fc(hidden)
+        return x
+```
+-> PyTorch 기반의 LSTM을 이용한 시계열 예측 모델
+
+
+```py
+model_5d_all = NeuralNetwork(7)
+```
+-> 입력 피쳐 수가 7개인 LSTM 모델을 생성하는 코드
+
+```py
+optimizer = optim.Adam(model_5d_all.parameters())
+mse = nn.MSELoss()
+```
+-> 옵티마이저 설정(Adam 최적화 알고리즘), 손실 함수 설정(MSELoss)
+
+
+
+
+```py
+def train(dataloader):
+    epoch_loss = 0
+    model_5d_all.train()
+
+    for batch in dataloader:
+        optimizer.zero_grad()
+        x,y= batch
+        pred = model_5d_all(x)
+        loss = mse(pred[0],y)
+        loss.backward()
+        optimizer.step()
+        epoch_loss += loss.item()
+
+    return epoch_loss
+```
+-> PyTorch 모델 학습을 한 epoch 동안 수행하는 함수
+
+
+
+```py
+def evaluate(dataloader):
+    epoch_loss = 0
+    model_5d_all.eval()
+
+    with torch.no_grad():
+        for batch in dataloader:
+            x,y= batch
+            pred = model_5d_all(x)
+            loss = mse(pred[0],y)
+            epoch_loss += loss.item()
+
+    return epoch_loss / len(dataloader)
+```
+-> evaluate() 함수는 모델의 검증 또는 테스트용 손실을 계산하는 함수
+
+
+
+
+
+```py
+n_epochs = 100
+best_valid_loss_5d_all = float('inf')
+
+for epoch in range(1, n_epochs + 1):
+
+    train_loss_5d_all = train(train_dataloader_5d_all)
+    valid_loss_5d_all = evaluate(valid_dataloader_5d_all)
+
+    #save the best model
+    if valid_loss_5d_all < best_valid_loss_5d_all:
+        best_valid_loss_5d_all = valid_loss_5d_all
+        torch.save(model_5d_all, 'saved_weights_5d_all.pt')
+
+    # print("Epoch ",epoch+1)
+    print(f'\tTrain Loss: {train_loss_5d_all:.5f} | ' + f'\tVal Loss: {valid_loss_5d_all:.5f}\n')
+```
+-> 총 100 epoch 동안 반복 학습
+
+-> 현재까지의 최저 검증 손실을 저장할 변수
+
+-> 반복 루프 : 매 epoch 마다 학습, 검증
