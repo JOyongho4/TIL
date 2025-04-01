@@ -126,3 +126,118 @@ df['17d_sma'] = df['17d_sma'].fillna(df['Close'])
 
 
 
+
+
+```py
+plt.figure(figsize=(20,10), dpi=200)
+plt.plot(df['Date'], df['Close'], label='XRPUSDT')
+plt.plot(df['Date'], df['5d_sma'], label='SMA 5')
+plt.plot(df['Date'], df['9d_sma'], label='SMA 9')
+plt.plot(df['Date'], df['17d_sma'], label='SMA 17')
+plt.title('XRPUSDT')
+plt.ylabel('Price')
+plt.xlabel('Date')
+plt.legend(loc='upper right')
+plt.show()
+```
+-> Matplotlib 기반 시계열 시각화
+
+-> 실제 종가와 3개의 SMA를 한 그래프에 시각화
+
+-> dpi는 해상도개념
+
+
+
+```py
+plt.plot(df['Date'], df['Close'], label='XRPUSDT')
+plt.plot(df['Date'], df['5d_sma'], label='SMA 5')
+plt.plot(df['Date'], df['9d_sma'], label='SMA 9')
+plt.plot(df['Date'], df['17d_sma'], label='SMA 17')
+```
+-> date별 각각의 가격을 시각화함
+
+
+
+
+```py
+fig = go.Figure(data=go.Candlestick(x=df["Date"], open=df["Open"], high=df["High"],
+                low=df["Low"], close=df["Close"], name="XRP"))
+fig.update_layout(xaxis_rangeslider_visible=False)
+
+fig.add_trace(go.Scatter(x=df['Date'],y=df['5d_sma'], line_color='#7295ee', name="SMA5",mode='lines'))
+fig.add_trace(go.Scatter(x=df['Date'],y=df['9d_sma'], line_color='#fcb539', name="SMA9",mode='lines'))
+fig.add_trace(go.Scatter(x=df['Date'],y=df['17d_sma'], line_color='#bd39fc', name="SMA17",mode='lines'))
+
+fig.update_layout(
+    autosize=False,
+    width=1200,
+    height=600,
+)
+
+fig.show()
+```
+-> XRP 캔들차트 위에 SMA 5일, 9일, 17일 이동 평균선을 덧그려서 시각적 추세를 보여줌
+
+```py
+fig = go.Figure(data=go.Candlestick(
+    x=df["Date"], open=df["Open"], high=df["High"],
+    low=df["Low"], close=df["Close"], name="XRP"
+))
+```
+-> 가격의 고가/저가/시가/종가를 시각화
+
+-> name = 'XRP' 는 Candlestick이 어떤 자산을 나타내는지 명시해주는 이름
+<w/>
+
+
+
+
+
+
+```py
+# Define parameters
+window_size = 15
+num_std = 4
+```
+-> 볼린저 밴드 계산에 쓸 구간 = 15, 표준편차 4배 범위로 밴드를 그리기
+
+```py
+# Calculate rolling mean and standard deviation 5d
+rolling_mean_5 = np.convolve(df['5d_sma'], np.ones(window_size)/window_size, mode='valid')
+```
+-> window_size 만큼 평균 계산, 끝부분 NaN 없이 잘라냄
+
+-> np.convolve : 합성곱 연산
+
+-> np.ones(window_size)/window_size : 각 구간의 값을 동일한 가중치로 평균 냄
+
+```py
+rolling_std_5 = np.std([df['5d_sma'][i:i+window_size] for i in range(len(df['5d_sma'])-window_size+1)], axis=1)
+```
+-> 각 구간별로 15일치 표준편차를 만들고 np.std로 계산
+
+```py
+# Calculate Bollinger Bands 5d
+upper_band_5 = rolling_mean_5 + num_std * rolling_std_5
+lower_band_5 = rolling_mean_5 - num_std * rolling_std_5
+```
+-> 상단/하단 밴드 만들기
+
+```py
+# Calculate rolling mean and standard deviation 9d
+rolling_mean_9 = np.convolve(df['9d_sma'], np.ones(window_size)/window_size, mode='valid')
+rolling_std_9 = np.std([df['9d_sma'][i:i+window_size] for i in range(len(df['9d_sma'])-window_size+1)], axis=1)
+
+# Calculate Bollinger Bands 9d
+upper_band_9 = rolling_mean_9 + num_std * rolling_std_9
+lower_band_9 = rolling_mean_9 - num_std * rolling_std_9
+
+# Calculate rolling mean and standard deviation 17d
+rolling_mean_17 = np.convolve(df['17d_sma'], np.ones(window_size)/window_size, mode='valid')
+rolling_std_17 = np.std([df['17d_sma'][i:i+window_size] for i in range(len(df['17d_sma'])-window_size+1)], axis=1)
+
+# Calculate Bollinger Bands 17d
+upper_band_17 = rolling_mean_17 + num_std * rolling_std_17
+lower_band_17 = rolling_mean_17 - num_std * rolling_std_17
+```
+-> 9일 17일 동일한 수행
