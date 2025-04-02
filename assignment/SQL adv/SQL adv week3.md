@@ -104,3 +104,35 @@ SELECT NULLIF(1, 2);
 ![설명 텍스트](./img/04030243.png)
 ![설명 텍스트](./img/04030244.png)
 ![설명 텍스트](./img/04030245.png)
+
+
+## 문제 1
+
+```SQL
+SELECT
+  CASE
+    WHEN A = B AND B = C THEN 'Equilateral'
+    WHEN A + B <= C OR A + C <= B OR B + C <= A THEN 'Not A Triangle'
+    WHEN A = B OR B = C OR C = A THEN 'Isosceles'
+    ELSE 'Scalene'
+  END
+FROM TRIANGLES;
+
+```
+
+
+##  문제 2
+```SQL
+SELECT
+  NAME
+FROM (
+  SELECT
+    *,
+    CASE
+      WHEN REFEREE_ID != 2 OR REFEREE_ID IS NULL THEN 'A'
+    END AS AA
+  FROM CUSTOMER
+) AS SUB
+WHERE AA = 'A';
+
+```
