@@ -160,4 +160,14 @@ group by rest_id
 order by score desc, favorites desc
 ```
 
-## 문제 2번 (풀이중...)
+## 문제 2번 (풀이중..., 어렵습니다...)
+```SQL
+SELECT
+    C.ID,
+    C.GENOTYPE,
+    P.GENOTYPE AS PARENT_GENOTYPE
+FROM ECOLI_DATA C
+    JOIN ECOLI_DATA P ON C.PARENT_ID = P.ID
+WHERE (C.GENOTYPE & P.GENOTYPE) = P.GENOTYPE
+ORDER BY C.ID;
+```
