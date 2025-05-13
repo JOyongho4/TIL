@@ -159,3 +159,5 @@ group by rest_id
 
 order by score desc, favorites desc
 ```
+
+## 문제 2번 (풀이중...)
