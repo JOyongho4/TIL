@@ -78,3 +78,84 @@ SELECT REGEXP_LIKE('CamelCase', 'CAMELCASE' COLLATE utf8mb4_0900_as_cs);
 ```
 -> 대소문자 구분 O : FALSE
 
+
+## 14.12 Bit Functions and Operators
+
+- 비트 연산자란 숫자를 이진수로 바꾼 뒤 비트 단위로 연산하는 도구
+
+예시
+```
+5 -> 101
+3 -> 011
+```
+![설명 텍스트](./img/05131543.png)
+![설명 텍스트](./img/05131544.png)
+![설명 텍스트](./img/05131550.png)
+
+### 시프트 연산
+```
+n << k : n을 2^k배로 만든다
+
+n >> k : n을 2^K로 나눈다
+```
+
+- 2진수
+
+```
+10진수 5  →  2진수 101
+10진수 15 →  2진수 1111
+```
+
+```SQL
+SELECT BIN(5);  -- 결과: '101'
+```
+
+- 16진수
+
+```
+2진수:  1111 1111 → 16진수: FF
+2진수:  0100 0000 → 16진수: 40
+```
+
+```SQL
+SELECT HEX(255);     -- 결과: 'FF'
+SELECT HEX('ABC');   -- 결과: '414243' (ASCII 코드 기반)
+```
+
+- 바이너라 문자열
+```SQL
+SELECT _binary 'A';         -- 문자 'A'를 바이너리로 간주
+SELECT HEX(_binary 'A');    -- 결과: '41'
+```
+
+```SQL
+SELECT _binary X'40' | X'01';  -- 바이너리 연산 → 결과: 'A'
+```
+
+예제
+```SQL
+SELECT 64 | 1, X'40' | X'01';
+```
+![설명 텍스트](./img/05131602.png)
+![설명 텍스트](./img/05131603.png)
+
+
+## 문제1
+
+```SQL
+select
+info.REST_ID,
+info.REST_NAME,
+info.FOOD_TYPE,
+info.FAVORITES,
+info.ADDRESS,
+round(avg(review.review_score), 2)as SCORE
+
+from rest_info as info
+join rest_review as review on info.rest_id = review.rest_id
+where
+info.ADDRESS REGEXP '^서울'
+group by rest_id
+
+order by score desc, favorites desc
+```
